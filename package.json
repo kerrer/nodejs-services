@@ -21,7 +21,6 @@
   "homepage": "https://github.com/kerrer/service#readme",
   "dependencies": {
     "bluebird": "^3.0.6",
-    "chance": "^0.7.7",
     "detect-port": "^0.1.4",
     "dnode": "^1.2.1",
     "fn.js": "^0.8.1",
@@ -30,10 +29,6 @@
     "node-etcd": "^4.2.1",
     "promise": "^7.0.4",
     "string": "^3.3.1",
-    "underscore": "^1.8.3",
-    "validate.js": "^0.9.0",
-    "walk": "^2.3.9",
-    "java": "^0.6.0",
     "log": "kerrer/nodejs-log"
   },
   "gitHead": "03adf4a04d4f5018b6355ce08a5a0533b1b229ce",

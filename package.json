@@ -33,8 +33,8 @@
     "underscore": "^1.8.3",
     "validate.js": "^0.9.0",
     "walk": "^2.3.9",
-     "java": "^0.6.0",
-    "log": "https://github.com/kerrer/nodejs-log.git"
+    "java": "^0.6.0",
+    "log": "kerrer/nodejs-log"
   },
   "gitHead": "03adf4a04d4f5018b6355ce08a5a0533b1b229ce",
   "readme": "\r\n\r\n# ${projectname}\r\n\r\n\r\n\r\n## Usage\r\n\r\n\r\n\r\n## Developing\r\n\r\n\r\n\r\n### Tools\r\n\r\nCreated with [Nodeclipse](https://github.com/Nodeclipse/nodeclipse-1)\r\n ([Eclipse Marketplace](http://marketplace.eclipse.org/content/nodeclipse), [site](http://www.nodeclipse.org))   \r\n\r\nNodeclipse is free open-source project that grows with your contributions.\r\n# node-rpc-service\n",

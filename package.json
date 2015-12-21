@@ -20,14 +20,15 @@
   },
   "homepage": "https://github.com/kerrer/service#readme",
   "dependencies": {
+    "async": "^1.5.0",
     "bluebird": "^3.0.6",
     "dnode": "^1.2.1",
     "fn.js": "^0.8.1",
     "lodash": "^3.10.1",
+    "log": "kerrer/nodejs-log",
     "node-etcd": "^4.2.1",
     "promise": "^7.0.4",
-    "string": "^3.3.1",
-    "log": "kerrer/nodejs-log"
+    "string": "^3.3.1"
   },
   "gitHead": "03adf4a04d4f5018b6355ce08a5a0533b1b229ce",
   "readme": "\r\n\r\n# ${projectname}\r\n\r\n\r\n\r\n## Usage\r\n\r\n\r\n\r\n## Developing\r\n\r\n\r\n\r\n### Tools\r\n\r\nCreated with [Nodeclipse](https://github.com/Nodeclipse/nodeclipse-1)\r\n ([Eclipse Marketplace](http://marketplace.eclipse.org/content/nodeclipse), [site](http://www.nodeclipse.org))   \r\n\r\nNodeclipse is free open-source project that grows with your contributions.\r\n# node-rpc-service\n",
@@ -37,6 +38,6 @@
   "_from": "git+https://github.com/kerrer/node-rpc-service.git",
   "_resolved": "git+https://github.com/kerrer/node-rpc-service.git#03adf4a04d4f5018b6355ce08a5a0533b1b229ce",
   "devDependencies": {
-    "grunt": "^0.4.5"    
+    "grunt": "^0.4.5"
   }
 }

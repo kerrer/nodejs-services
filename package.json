@@ -21,10 +21,8 @@
   "homepage": "https://github.com/kerrer/service#readme",
   "dependencies": {
     "bluebird": "^3.0.6",
-    "detect-port": "^0.1.4",
     "dnode": "^1.2.1",
     "fn.js": "^0.8.1",
-    "ip": "^1.1.0",
     "lodash": "^3.10.1",
     "node-etcd": "^4.2.1",
     "promise": "^7.0.4",

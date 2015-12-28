@@ -2,7 +2,8 @@
     "walk": "^2.3.9",
     "java": "^0.6.0",
         "chance": "^0.7.7",
-
+     kriszyp/promised-io 
+    ForbesLindesay/promisejs.org 【www.promisejs.org】
 
 "grunt-contrib-coffee": "^0.13.0",
     "grunt-mocha-test": "^0.12.7",

@@ -1,0 +1,6 @@
+var Service = require('services')(<%= options.etcd_port %>,'<%= options.etcd_host %>')
+				.config({instances:<%= options.instances %>})
+				.server(<%= options.port %>,'<%= options.host %>');
+Service.on('error',function(error){ console.log(error);});
+Service.on('done',function(s){console.log(s);});
+Service.emit('start','<%= options.name %>');	

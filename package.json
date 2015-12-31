@@ -26,6 +26,7 @@
     "ejs": "^2.3.4",
     "exception": "github:kerrer/nodejs-exception",
     "fn.js": "^0.8.1",
+    "forever": "^0.15.1",
     "lodash": "^3.10.1",
     "log": "github:kerrer/nodejs-log",
     "node-etcd": "^4.2.1",

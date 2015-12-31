@@ -23,21 +23,23 @@
     "async": "^1.5.0",
     "bluebird": "^3.1.1",
     "dnode": "^1.2.1",
-    "exception": "kerrer/nodejs-exception",
+    "ejs": "^2.3.4",
+    "exception": "github:kerrer/nodejs-exception",
     "fn.js": "^0.8.1",
     "lodash": "^3.10.1",
-    "log": "kerrer/nodejs-log",
+    "log": "github:kerrer/nodejs-log",
     "node-etcd": "^4.2.1",
     "promise": "^7.0.4",
+    "promised-io": "^0.3.5",
     "string": "^3.3.1"
   },
   "gitHead": "03adf4a04d4f5018b6355ce08a5a0533b1b229ce",
   "readme": "\r\n\r\n# ${projectname}\r\n\r\n\r\n\r\n## Usage\r\n\r\n\r\n\r\n## Developing\r\n\r\n\r\n\r\n### Tools\r\n\r\nCreated with [Nodeclipse](https://github.com/Nodeclipse/nodeclipse-1)\r\n ([Eclipse Marketplace](http://marketplace.eclipse.org/content/nodeclipse), [site](http://www.nodeclipse.org))   \r\n\r\nNodeclipse is free open-source project that grows with your contributions.\r\n# node-rpc-service\n",
   "readmeFilename": "README.md",
   "_id": "services@1.0.0",
-  "_shasum": "dcdf392f05caca61512da3b35b7457d571fdf501",
-  "_from": "git+https://github.com/kerrer/node-rpc-service.git",
-  "_resolved": "git+https://github.com/kerrer/node-rpc-service.git#03adf4a04d4f5018b6355ce08a5a0533b1b229ce",
+  "_shasum": "e11c1f5f1198c5217162cd58bcf18aa1318976d7",
+  "_from": "kerrer/nodejs-services",
+  "_resolved": "git://github.com/kerrer/nodejs-services.git#bc0ce130db8c4f5f4c44d77bb956452148a7cb90",
   "devDependencies": {
     "grunt": "^0.4.5"
   }

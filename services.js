@@ -19,43 +19,37 @@ var EventEmitter = require('events').EventEmitter;
 var etcd;
 var cluster,numCPUs,config;
 
-//一个包含 "freq" 和 "name" 属性的对象
 var service = function(server) {
-    //保存 指向Radio的this，在setTimeout()中使用
-    var self = this;
+    var self = this;   
     
+    //this.on('newListener', function(listener) {
+    //    Log.info('Event Listener: ' + listener);
+    //});
     
-    this.on('newListener', function(listener) {
-        Log.info('Event Listener: ' + listener);
-    });
-    
-    this.on('start', function(node) {
-		server.node = node;
-        start(server).then(function(){				
-			self.emit('done','services have been started!');
-		},function(error){
-			self.emit('error',error.message);
+    this.monitor=function(){
+		var io = require('socket.io');
+		var server = io(3210, { pingInterval: 2000 });
+		server.on('connection', function(socket){
+			socket.on('hi', function(data){
+				console.log(data);
+				socket.emit('hi', new Date());
+				self.emit('test',data);
+			});
+			socket.on('',function(){
+				
+			});
 		});
-    });
-    
-	this.on('stop', function(ss) {
-        shutdown().then(function(){
-			self.emit('done','services have been stoped!');
-		},function(error){ 
-			self.emit('error',error.message); 
-		});
-    });
-    
-    this.on('reload', function(ss) {
-		async.series([
+	};
+	
+    //start events
+    this.on('start', function(node) {	
+		node && (server.node = node); 
+		async.parallel([
 			function(callback){
-				purgeServices(server).then(function(){ callback(null, 1); },function(error){ callback(error); });	
+				registerServices(server).then(function(){ callback(null, 1); },function(error){ callback(error); });
 			},
 			function(callback){
-				registerServices(server).then(function(){ callback(null, 2); },function(error){ callback(error); });	
-			},
-			function(callback){
-				reloadService(server).then(function(){ callback(null, 3); },function(error){ callback(error); });	
+				start(server).then(function(){ self.monitor();callback(null, 2); },function(error){ callback(error); });	
 			}
 		],
 		function(error, results){
@@ -63,24 +57,41 @@ var service = function(server) {
 				Log.error(error);
 				self.emit('error',error.message);
 			}else{
-				self.emit('done',"all services reload!");
+				self.emit('done',"services have been started!");
 			}
 		}); 
     });
     
-	this.on('restart', function(ss) {
-       async.series([
+	this.on('stop', function() {
+		async.parallel([
 			function(callback){
 				purgeServices(server).then(function(){ callback(null, 1); },function(error){ callback(error); });	
-			},
-			function(callback){
-				registerServices(server).then(function(){ callback(null, 2); },function(error){ callback(error); });	
 			},
 			function(callback){
 				shutdown().then(function(){ callback(null, 2); },function(error){ callback(error); });	
+			}
+		],
+		function(error, results){
+			if(error){
+				Log.error(error);
+				self.emit('error',error.message);
+			}else{
+				self.emit('done',"all services stoped!");
+			}
+		}); 
+    });
+    
+    this.on('reload', function() {
+		async.parallel([
+			function(callback){
+				purgeServices(server).then(function(){ 
+					registerServices(server).then(function(){ callback(null, 1); },  function(error){ callback(error); });
+				},function(error){ 
+					callback(error); 
+				});	
 			},
 			function(callback){
-				start(server).then(function(){ callback(null, 4); },function(error){ callback(error); });	
+				reloadService(server).then(function(){ callback(null, 2); },function(error){ callback(error); });	
 			}
 		],
 		function(error, results){
@@ -92,13 +103,65 @@ var service = function(server) {
 			}
 		}); 
     });
+    
+	this.on('restart', function() {
+       async.parallel([
+			function(callback){
+				purgeServices(server).then(function(){ 
+					registerServices(server).then(function(){ callback(null, 1); },  function(error){ callback(error); });
+				},function(error){ 
+					callback(error); 
+				});
+			},
+			function(callback){
+				shutdown().then(function(){ 
+					start(server).then(function(){ callback(null, 2); },function(error){ callback(error); });
+				},function(error){ 
+					callback(error); 
+				});	
+			}
+		],
+		function(error, results){
+			if(error){
+				Log.error(error);
+				self.emit('error',error.message);
+			}else{
+				self.emit('done',"all services reload!");
+			}
+		}); 
+    });
+    
+    this.on('register', function() {
+        async.series([
+			function(callback){
+				purgeServices(server).then(function(){ callback(null, 1); },function(error){ callback(error); });	
+			},
+			function(callback){
+				registerServices(server).then(function(){ callback(null, 2); },function(error){ callback(error); });	
+			}
+		],
+		function(error, results){
+			if(error){
+				Log.error(error);
+				self.emit('error',error.message);
+			}else{
+				self.emit('done',"all services register!");
+			}
+		}); 
+    });
+    
+    this.on('test', function(data){
+		console.log('test');
+		Log.debug('test from ',data);
+    });
+    //end event
 };
 
 util.inherits(service, EventEmitter);
 
 function start(server){
 	return new Promise(function (resolve, reject){
-		var tag =  server.tag;
+		var node =  server.node;
 		var host = server.host = host || server.host || '127.0.0.1';
 		var port = server.port = port || server.port || '5004';
 		Log.info('starting services..............');
@@ -236,52 +299,51 @@ function getBestNode(nodes){
 }
 
 function runCluster(instances,options,cb){
-		var ejs = require('ejs');
-		var tempdir=path.join(process.env.PWD,'.tmp');
-		if(!_fs.existsSync(tempdir)){
-			_fs.mkdirSync(tempdir)
-	    }
-		var server_file=path.join(tempdir,'server.js');
-		var fun_template = _fs.readFileSync(path.join(__dirname, "ejs","server.ejs"),'utf8');
-		var data = ejs.render(fun_template, {ss:''});
-		_fs.writeFileSync(server_file, data, 'utf8');
+	var ejs = require('ejs');
+	var tempdir=path.join(process.env.PWD,'.tmp');
+	
+	if(!_fs.existsSync(tempdir)){
+		_fs.mkdirSync(tempdir)
+	}
+	
+	var server_file=path.join(tempdir,'server.js');
+	var fun_template = _fs.readFileSync(path.join(__dirname, "ejs","server.ejs"),'utf8');
+	var data = ejs.render(fun_template, {ss:''});purgeServices
+	_fs.writeFileSync(server_file, data, 'utf8');
 		
-		cluster.setupMaster({exec:server_file});
-		cluster.on('exit',function(worker,code, signal){		
-			if( signal ) {
-				Log.debug("worker",worker.id," was killed by signal: ", signal);
-			} else if( code !== 0 ) {
-				Log.debug("worker",worker.id," exited with error code: "+code);				
-			} else {
-				Log.debug("worker success!");
-			}
+	cluster.setupMaster({exec:server_file});
+	cluster.on('exit',function(worker,code, signal){		
+		if( signal ) {
+			Log.debug("worker",worker.id," was killed by signal: ", signal);
+		} else if( code !== 0 ) {
+			Log.debug("worker",worker.id," exited with error code: "+code);				
+		} else {
+			Log.debug("worker success!");
+		}
 				
-			if (worker.suicide === false && code !== 0) {
-				var work = cluster.fork();
-			    work.send(options);				   
-			}				
-		});
+		if (worker.suicide === false && code !== 0) {
+			var work = cluster.fork();
+		    work.send(options);				   
+		}				
+	});
 
-		async.each(_.range(instances), function(id, callback) {
-			var work = cluster.fork();					
-			work.on('error',function(err){
-			   Log.error("error handpend: ", err);	
-			});
-			work.send(options);		
-				//work.process.stdout.on('data',function(data){console.log(data.toString())});	
-				callback();		
-		}, function(error){
-			if( error ) {
-				Log.error("purger service: ",error.message);
-				cb(error);
-			}
-			Log.info("服务正在监听端口:" +options.host + ":" + options.port);	
-			cb(null,true);				 			
-		});	//async.each  
+	async.each(_.range(instances), function(id, callback) {
+		var work = cluster.fork();					
+		work.on('error',function(err){
+		   Log.error("error handpend: ", err);	
+		});
+		work.send(options);		
+		//work.process.stdout.on('data',function(data){console.log(data.toString())});	
+		callback();		
+	}, function(error){
+		error && Log.error("purger service: ",error.message) && cb(error);
+		Log.info("服务正在监听端口:" +options.host + ":" + options.port);	
+		cb(null,true);				 			
+	});	//async.each  
 }
 	
 function reloadService(server){
-	var tag = server.tag;
+	var node = server.node;
 	var host = server.host;
 	var port = server.port;
 		
@@ -304,33 +366,39 @@ function reloadService(server){
 	
 function registerServices(server){		
 	return   new Promise(function (resolve, reject){		
-		var tag = server.tag;
+		var node = server.node;
 		var host = server.host;
 		var port = server.port;
-		
+
 		pfs.readFile(server.all_services_path,'utf8').then(function(data){
 			var buffer = new Buffer(JSON.parse("{\"type\":\"Buffer\",\"data\":[" + data + "]}"));
 			var services = JSON.parse(buffer.toString());
 			var ipkey = host + ":" + port;
-			var calls=[];
-			var host_uri= server.hosts_prefix + "/" + ipkey + ":" + tag;
+			var node_all_services=[];
+			var host_uri= server.hosts_prefix + "/" + ipkey + ":" + node;
+			
+			var regs = {};
 		
-			async.forEachOf(services, function(item,key, cb_foreach) {
+			async.forEachOf(services, function(item,key, callback) {
 				async.each(item, function(service, cb_each) {
-					var uri= server.projects_prefix + "/"+tag + "/" + service.call_name + "/" + ipkey;
+					var key= server.projects_prefix + "/"+node + "/" + service.call_name + "/" + ipkey;
 					service.host=host;
 					service.port=port;
-					calls.push(service.call_name);
-					etcd.set(uri,JSON.stringify(service),function(error,body,header){
-						error ? cb_each(error):cb_each();;						
-					});//etcd.set					
-				}, function(error){
-					error ? cb_foreach(error): cb_foreach();
+					node_all_services.push(service.call_name);
+					regs[key]=JSON.stringify(service);				
 				});	//async.each	
-			}, function(error){
-				error && Log.error("regist services error: ",error.message) && reject(error);
-				etcd.set(host_uri,JSON.stringify(calls),function(error,body,header){ error ? reject(error): resolve(); 	});		
 			});	//async.forEachOf
+			
+			regs[host_uri] = JSON.stringify(node_all_services);
+		
+			async.forEachOf(regs, function(value,key, callback) {
+				etcd.set(key,value,function(error,body,header){
+					error ? Log.error(error) : null;
+					callback();					
+				});//etcd.set					
+			});	//async.each	
+			
+			resolve();		
 		},function(error){
 			Log.error(error);	
 			reject(error);
@@ -338,25 +406,31 @@ function registerServices(server){
 	});//promise
 }
 
-function purgeServices(server){		
+function purgeServices(server){
 	return new Promise(function (resolve, reject){
-		var tag = server.tag;
+		var node = server.node;
 		var host = server.host;
 		var port = server.port;			
 		var ipkey = host + ":" + port;
-		var hostUri= server.hosts_prefix + "/" +ipkey + ":" + tag;
-					
+		var hostsKey= server.hosts_prefix + "/" +ipkey + ":" + node;
+		var regs =[];
+			
 		etcd.get(hostUri,function(error,body,header){
 			error ? reject(error):null;
 			body.node.value ? null : resolve();
 			var names = JSON.parse(body.node.value); 
+			
 			async.each(names, function(name, callback) {
-				var uri= server.projects_prefix + "/" + tag + "/" + name + "/" + ipkey;
-				etcd.del(uri,function(error,body,header){ 	error ? callback(error): callback();});//etcd.del					
-			}, function(error){
-				error && Log.error("purger service: ",error.message) && reject(error);
-				etcd.del(hostUri,function(error,body,header){ error ? reject(error): resolve(); });			
-			});	//async.each				
+				var key= server.projects_prefix + "/" + node + "/" + name + "/" + ipkey;
+				regs.push(key);				
+			});
+			
+			regs.push(hostsKey);
+			
+			async.each(regs, function(key, callback) {
+				etcd.del(key,function(error,body,header){ 	error ? Log.error(error) : null; callback(); });//etcd.del					
+			});		
+			resolve();			
 		});//etcd.get		
 	});  //promise		
 }
@@ -378,9 +452,9 @@ function Services(etcd_port,etcd_host) {
 		this.port = port || '5004';
 	    this.host = host || '0.0.0.0';
 	 
-        this.all_services_path=process.env.SVR_DIR + "/all.services";
-        this.all_files_path=process.env.SVR_DIR + "/all.files";   
-		
+        this.all_services_path = path.join(process.env.SVR_DIR, "all.services");
+        this.all_files_path = path.join(process.env.SVR_DIR, "all.files");   
+	
 		return new service(this);
 	};
 	
@@ -391,6 +465,10 @@ function Services(etcd_port,etcd_host) {
     services.config=function(options){
 		this.options = _.merge(this.options, options);
 		return this;
+	};
+	
+	services.get = function(name,param,cb){
+		get(name,param,cb);
 	};
 	
 	return services;

@@ -3,27 +3,22 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
         all: [
-          'Gruntfile.js',
-          'src/**/*.js'
+          './**/*.js'
         ]
     },
-    clean: {
-    	target:["target"],
-    },
-    test: {
-            all: ['target/test/**/*_test.js']
-    },
-    jsdoc : {
-        dist : {
-            src: ['src/main/*.js', 'src/test/*.js'],
-            options: {
-                destination : 'target/out/doc',
-                template : "node_modules/ink-docstrap/template",
-                configure : "node_modules/grunt-build/jsdoc.conf.json"
-            }
-        }
+    mochaTest: {
+      test: {
+        options: {
+          reporter: 'spec',
+         
+          quiet: false, // Optionally suppress output to standard out (defaults to false)
+          clearRequireCache: false // Optionally clear the require cache before running tests (defaults to false)
+        },
+        src: ['test/**/*Test.js']
+      }
     }
   });
  
-  require('load-grunt-tasks')(grunt); 
+  grunt.loadNpmTasks('grunt-mocha-test');
+   grunt.registerTask('default', 'mochaTest');
 };

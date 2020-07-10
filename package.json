@@ -27,7 +27,7 @@
     "exception": "github:kerrer/nodejs-exception",
     "fn.js": "^0.8.1",
     "forever": "^0.15.1",
-    "lodash": "^3.10.1",
+    "lodash": "^4.17.13",
     "log": "github:kerrer/nodejs-log",
     "node-etcd": "^4.2.1",
     "promise": "^7.0.4",

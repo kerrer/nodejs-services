@@ -1,23 +1,23 @@
 'use strict';
 
-var _Etcd = require('node-etcd'),
+const _Etcd = require('node-etcd'),
 	_dnode = require('dnode'),
 	_fs =  require('fs'),
 	path = require('path'),
 	S = require('string'),
     _ = require('lodash');
 
-var Promise = require('bluebird');
-var pfs = require("promised-io/fs");
-var async=require('async');
-var Err=require('exception');
-var Log=require('log')();
+const Promise = require('bluebird');
+const pfs = require("promised-io/fs");
+const async=require('async');
+const Err=require('exception');
+const Log=require('log')();
 
-var util = require('util');
-var EventEmitter = require('events').EventEmitter;
+const util = require('util');
+const EventEmitter = require('events').EventEmitter;
 
-var etcd;
-var cluster,numCPUs,config;
+let etcd;
+let cluster,numCPUs,config;
 
 var service = function(server) {
     var self = this;   

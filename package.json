@@ -20,20 +20,20 @@
   },
   "homepage": "https://github.com/kerrer/service#readme",
   "dependencies": {
-    "async": "^1.5.0",
-    "bluebird": "^3.1.1",
+    "async": "^3.2.0",
+    "bluebird": "^3.7.2",
     "dnode": "davedoesdev/dnode",
-    "ejs": "^2.3.4",
-    "exception": "github:kerrer/nodejs-exception",
+    "ejs": "^3.1.3",
+    "exception": "kerrer/wolf-exception",
     "fn.js": "^0.8.1",
-    "forever": "^0.15.1",
-    "lodash": "^3.10.1",
-    "log": "github:kerrer/nodejs-log",
-    "node-etcd": "^4.2.1",
-    "promise": "^7.0.4",
-    "promised-io": "^0.3.5",
-    "socket.io": "^1.3.7",
-    "string": "^3.3.1"
+    "forever": "^3.0.0",
+    "lodash": "^4.17.19",
+    "log": "kerrer/wolf-log",
+    "node-etcd": "^7.0.0",
+    "promise": "^8.1.0",
+    "promised-io": "^0.3.6",
+    "socket.io": "^2.3.0",
+    "string": "^3.3.3"
   },
   "gitHead": "03adf4a04d4f5018b6355ce08a5a0533b1b229ce",
   "readme": "\r\n\r\n# ${projectname}\r\n\r\n\r\n\r\n## Usage\r\n\r\n\r\n\r\n## Developing\r\n\r\n\r\n\r\n### Tools\r\n\r\nCreated with [Nodeclipse](https://github.com/Nodeclipse/nodeclipse-1)\r\n ([Eclipse Marketplace](http://marketplace.eclipse.org/content/nodeclipse), [site](http://www.nodeclipse.org))   \r\n\r\nNodeclipse is free open-source project that grows with your contributions.\r\n# node-rpc-service\n",
@@ -44,10 +44,10 @@
   "_resolved": "git://github.com/kerrer/nodejs-services.git#bc0ce130db8c4f5f4c44d77bb956452148a7cb90",
   "devDependencies": {
     "expect.js": "^0.3.1",
-    "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^0.11.3",
-    "grunt-mocha-test": "^0.12.7",
-    "mocha": "^2.3.4",
-    "socket.io-client": "^1.3.7"
+    "grunt": "^1.2.1",
+    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-mocha-test": "^0.13.3",
+    "mocha": "^8.0.1",
+    "socket.io-client": "^2.3.0"
   }
 }

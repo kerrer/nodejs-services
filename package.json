@@ -32,7 +32,7 @@
     "node-etcd": "^7.0.0",
     "promise": "^8.1.0",
     "promised-io": "^0.3.6",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "string": "^3.3.3"
   },
   "gitHead": "03adf4a04d4f5018b6355ce08a5a0533b1b229ce",

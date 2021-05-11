@@ -27,7 +27,7 @@
     "exception": "file:../wolf-exception",
     "fn.js": "^0.8.1",
     "forever": "^3.0.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "log": "file:../wolf-log",
     "node-etcd": "^7.0.0",
     "promise": "^8.1.0",
